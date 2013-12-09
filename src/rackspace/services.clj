@@ -1,11 +1,10 @@
 (ns rackspace.services
-  (:require [clojure.data.json :as json]
+  (:require [cheshire.core :refer :all]
             [clojure.string :as string]
             [clj-http.client :as http]
             [rackspace.const :as const]
             [rackspace.exceptions :as exceptions]
             [rackspace.util :as util]))
-
 
 (defn get-service-catalog [identity-response]
   (((util/parse-json-body identity-response) :access) :serviceCatalog))
