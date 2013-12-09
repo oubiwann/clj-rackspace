@@ -1,6 +1,6 @@
 (ns rackspace.servers
   (:require [clj-http.client :as http]
-            [clojure.data.json :as json]
+            [cheshire.core :refer :all]
             [rackspace.const :as const]))
 
 ; XXX NOTE!!!
@@ -17,7 +17,7 @@
   (try
    (let [response (http/get (str (session :url) arg)
          {const/x-auth-token (session :token)})]
-     (with-meta (json/read-str (first (response :body-seq))) response))
+     (with-meta (decode (first (response :body-seq))) response))
    (catch Exception e (println e))))
 
 (defn list-servers
@@ -51,18 +51,18 @@
         server {:server (if (not= nil metadata)
                           (-> json-vals (assoc :metadata metadata))
                 json-vals)}
-        json-data (json/write-str server)
+        json-data (encode server)
         response (http/post (str (session :url) "/servers")
                   {const/x-auth-token (session :token)
           "Content-type" "application/json"}
          json-data)]
-    (with-meta ((json/read-str (first (response :body-seq))) "server") response)))
+    (with-meta ((decode (first (response :body-seq))) "server") response)))
 
 (defn rename-server
   "Rename server."
   [session server-id name]
   (let [json-vals {:server {:name name}}
-  json-data (json/write-str json-vals)
+  json-data (encode json-vals)
   response (http/put (str (session :url) "/servers/" server-id)
         {const/x-auth-token (session :token)
          "Content-type" "application/json"}
@@ -91,14 +91,14 @@
     :else nil)
   response (http/get (str (session :url) "/servers/" id "/ips" v)
         {const/x-auth-token (session :token)})]
-    (with-meta (json/read-str (first (response :body-seq))) response)))
+    (with-meta (decode (first (response :body-seq))) response)))
 
 
 (defn- action [session url-args action type action-args]
   (let [response (http/post (str (session :url) url-args)
          {const/x-auth-token (session :token)
           "Content-type" "application/json"}
-         (json/write-str {action {type action-args}}))]
+         (encode {action {type action-args}}))]
     (with-meta (struct rs-response (if (= (response :msg) "Accepted")
              true
              false)) response)))

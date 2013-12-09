@@ -1,6 +1,5 @@
 (ns rackspace.util
-  (:require [clojure.data.json :as json]))
-
+  (:require [cheshire.core :refer :all]))
 
 (defn parse-json-body [response]
-  (json/read-str (response :body) :key-fn keyword))
+  (decode (response :body) true))

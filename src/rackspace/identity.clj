@@ -1,5 +1,5 @@
 (ns rackspace.identity
-  (:require [clojure.data.json :as json]
+  (:require [cheshire.core :refer :all]
             [clojure.string :as string]
             [clj-http.client :as http]
             [rackspace.const :as const]
@@ -8,17 +8,17 @@
 
 
 (defn password-auth-payload [username password]
-  {:body (json/write-str {:auth
-                          {:passwordCredentials
-                           {:username username
-                            :password password}}})
+  {:body (encode {:auth
+                  {:passwordCredentials
+                   {:username username
+                    :password password}}})
    :headers {"Content-Type" "application/json"}})
   
 (defn apikey-auth-payload [username apikey]
-  {:body (json/write-str {:auth
-                          {:RAX-KSKEY:apiKeyCredentials
-                           {:username username
-                            :apiKey apikey}}})
+  {:body (encode {:auth
+                  {:RAX-KSKEY:apiKeyCredentials
+                   {:username username
+                    :apiKey apikey}}})
    :headers {"Content-Type" "application/json"}})
 
 (defn password-login [username password]
