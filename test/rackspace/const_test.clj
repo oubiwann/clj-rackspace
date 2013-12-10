@@ -36,5 +36,5 @@
   (is (= (str (System/getProperty "user.home") "/.rax/apikey")
          const/apikey-file)))
 
-
+; this is a comment
 
