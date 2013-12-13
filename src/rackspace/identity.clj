@@ -32,7 +32,8 @@
     (apikey-auth-payload username apikey)))
 
 (defn explicit-login [username & {:keys [password apikey]}]
-  (cond
+  (
+   cond
     password (password-login username password)
     apikey (apikey-login username apikey)
     :else (throw
@@ -51,25 +52,26 @@
 (defn get-env-username
   "Get the user name from the environment variables."
   []
-  (System/getenv const/username-env))
+  (util/get-env const/username-env))
 
 (defn get-env-password
   "Get the password from the environment variables."
   []
-  (System/getenv const/password-env))
+  (util/get-env const/password-env))
 
 (defn get-env-apikey
   "Get the API key from the environment variables."
   []
-  (System/getenv const/apikey-env))
+  (util/get-env const/apikey-env))
 
 (defn get-username []
+  ;not to be confused with "get-user-name"
   (let [username (get-env-username)]
   (cond
     (not (empty? username)) username
     :else (get-disk-username))))
 
-(defn get-password 
+(defn get-password
   "Unlike username and apikey, password can technically be an empty string, so
   allowing for that"
   []
@@ -83,11 +85,6 @@
     (cond
       (not (empty? apikey)) apikey
       :else (get-disk-apikey))))
-
-(defn get-password-or-apikey
-  "If a valid password exists return it, else return the API key."
-  []
-  (or (get-env-apikey) (get-env-password)))
 
 (defn login
   ([]
@@ -109,4 +106,6 @@
   (get-in (util/parse-json-body response) [:access :user :id]))
 
 (defn get-user-name [response]
+  ;not to be confused with "get-username"
   (get-in (util/parse-json-body response) [:access :user :name]))
+  
