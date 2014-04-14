@@ -116,8 +116,8 @@ Via API key:
 
 .. code:: clojure
 
-    rackspace.api=> (login "alice" :apikey "0a12b33c444d5555ee0123456789ffff")
-    {:orig-content-encoding "gzip" ... }
+    rackspace.api=> (def response (login "alice" :apikey "0a12b33c444d5555ee0123456789ffff"))
+    #'rackspace.api/response
     rackspace.api=>
 
 You will need to pass one of the two, however:
